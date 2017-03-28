@@ -1,6 +1,5 @@
 /vendor/
 /log/*
 !/log/.gitignore
-composer.lock
-example
+config.php
 

@@ -9,17 +9,19 @@
 
 namespace Kcloze\Bot;
 
+use Swoole\Process as SwooleProcess;
+
 class Process
 {
     const PROCESS_NAME_LOG = ' php: swoole-bot'; //shell脚本管理标示
     private $reserveProcess;
     private $workers;
     private $workNum = 1;
-    private $config  = [];
+    private $config = [];
 
     public function start($config)
     {
-        \Swoole\Process::daemon();
+        SwooleProcess::daemon();
         $this->config = $config;
         //开启多个进程消费队列
         for ($i = 0; $i < $this->workNum; $i++) {
@@ -35,13 +37,13 @@ class Process
         $ppid = getmypid();
         //file_put_contents($this->config['logPath'] . '/master.pid.log', $ppid . "\n");
         $this->setProcessName('job master ' . $ppid . $self::PROCESS_NAME_LOG);
-        $reserveProcess = new \Swoole\Process(function () use ($self, $workNum) {
+        $reserveProcess      = new SwooleProcess(function () use ($self, $workNum) {
             //设置进程名字
             $this->setProcessName('job ' . $workNum . $self::PROCESS_NAME_LOG);
             try {
                 $job = new Robot($self->config);
                 $job->run();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo $e->getMessage();
             }
             echo 'reserve process ' . $workNum . " is working ...\n";
@@ -54,12 +56,12 @@ class Process
     //监控子进程
     public function registSignal($workers)
     {
-        \Swoole\Process::signal(SIGTERM, function ($signo) {
+        SwooleProcess::signal(SIGTERM, function ($signo) {
             $this->exitMaster('收到退出信号,退出主进程');
         });
-        \Swoole\Process::signal(SIGCHLD, function ($signo) use (&$workers) {
+        SwooleProcess::signal(SIGCHLD, function ($signo) use (&$workers) {
             while (true) {
-                $ret = \Swoole\Process::wait(false);
+                $ret = SwooleProcess::wait(false);
                 if ($ret) {
                     $pid           = $ret['pid'];
                     $child_process = $workers[$pid];
