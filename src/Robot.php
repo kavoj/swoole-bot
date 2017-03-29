@@ -214,18 +214,18 @@ class Robot
             if ($message instanceof Recall && $message->msg['FromUserName'] !== myself()->username) {
                 /** @var $message Recall */
                 if ($message->origin instanceof Image) {
-                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一张照片");
-                    Image::sendByMsgId($message->msg['FromUserName'], $message->origin->msg['MsgId']);
+//                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一张照片");
+//                    Image::sendByMsgId($message->msg['FromUserName'], $message->origin->msg['MsgId']);
                 } elseif ($message->origin instanceof Emoticon) {
-                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一个表情");
-                    Emoticon::sendByMsgId($message->msg['FromUserName'], $message->origin->msg['MsgId']);
+//                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一个表情");
+//                    Emoticon::sendByMsgId($message->msg['FromUserName'], $message->origin->msg['MsgId']);
                 } elseif ($message->origin instanceof Video) {
-                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一个视频");
-                    Video::sendByMsgId($message->msg['FromUserName'], $message->origin->msg['MsgId']);
+//                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一个视频");
+//                    Video::sendByMsgId($message->msg['FromUserName'], $message->origin->msg['MsgId']);
                 } elseif ($message->origin instanceof Voice) {
-                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一条语音");
+//                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一条语音");
                 } else {
-                    Text::send($message->msg['FromUserName'], "{$message->nickname} 撤回了一条信息 \"{$message->origin->msg['Content']}\"");
+                    Text::send($message->msg['FromUserName'], "{$message->origin->message}");
                 }
             }
 
@@ -276,7 +276,8 @@ class Robot
                     $reply .= "\n来源APP：{$message->app}";
                 }
 
-                return $reply;
+                // return $reply;
+                return false;
             }
 
             // 分享小程序信息
@@ -292,7 +293,8 @@ class Robot
                 /** @var $message Official */
                 $reply = "收到公众号推送\n标题：{$message->title}\n描述：{$message->description}\n链接：{$message->url}\n来源公众号名称：{$message->app}";
 
-                return $reply;
+//                return $reply;
+                return false;
             }
 
             // 手机点击聊天事件
