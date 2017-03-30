@@ -133,6 +133,12 @@ class Robot
                     return sprintf('你好，我叫%s，欢迎欢迎！', $this->name);
                 }
 
+                if (function_exists(explode(' ', $message->content)[1])) {
+                    $func = explode(' ', $message->content)[1];
+
+                    return Utils::getInstance()->phpdoc($func);
+                }
+
                 // 联系人自动回复
                 if ($message->fromType === 'Contact') {
                     if ($message->content === '拉我') {
