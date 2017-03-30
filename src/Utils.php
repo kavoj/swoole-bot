@@ -48,7 +48,8 @@ DDL;
         $docs = self::$db->select('docs', '*', ['func' => $func]);
 
         if (empty($docs)) {
-            $uri     = sprintf('http://php.net/manual/zh/function.%s.php', $func);
+            $uri = sprintf('http://php.net/manual/zh/function.%s.php', str_replace('_', '-', $func));
+
             $content = self::$guzzle->request('GET', $uri)->getBody()->getContents();
 
             preg_match('#<p class="verinfo">(.*?)</p>#', $content, $verinfo);
